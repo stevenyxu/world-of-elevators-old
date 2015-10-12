@@ -1,6 +1,6 @@
 /*! React Starter Kit | MIT License | http://www.reactstarterkit.com/ */
 
-import 'babel/polyfill';
+import 'babel-core/polyfill';
 import ReactDOM from 'react-dom';
 import FastClick from 'fastclick';
 import Router from './routes';
@@ -28,7 +28,7 @@ const context = {
 };
 
 function render(state) {
-  Router.dispatch(state, (__, component) => {
+  Router.dispatch(state, (newState, component) => {
     ReactDOM.render(component, appContainer, () => {
       // Restore the scroll position if it was saved into the state
       if (state.scrollY !== undefined) {
