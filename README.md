@@ -54,7 +54,7 @@ Join [#react-starter-kit](https://gitter.im/kriasoft/react-starter-kit) chatroom
 │   ├── /build.js               # Builds the project from source to output (build) folder
 │   ├── /bundle.js              # Bundles the web resources into package(s) through Webpack
 │   ├── /clean.js               # Cleans up the output (build) folder
-│   ├── /config.js              # Webpack configuration for application bundles
+│   ├── /webpack.config.js      # Configurations for client-side and server-side bundles
 │   ├── /copy.js                # Copies static files to output (build) folder
 │   ├── /deploy.js              # Deploys your web application
 │   ├── /serve.js               # Launches the Node.js/Express web server
@@ -78,17 +78,17 @@ $ npm start                     # Compile and launch
 ### How to Build
 
 ```shell
-$ npm run build                 # or, `npm run build -- release`
+$ npm run build                 # or, `npm run build -- --release`
 ```
 
 By default, it builds in *debug* mode. If you need to build in release
-mode, just add a `-- release` flag. This will optimize the output bundle for
+mode, just add a `-- --release` flag. This will optimize the output bundle for
 production.
 
 ### How to Run
 
 ```shell
-$ npm start                     # or, `npm start -- release`
+$ npm start                     # or, `npm start -- --release`
 ```
 
 This will start a light-weight development server with "live reload" and
@@ -97,7 +97,7 @@ synchronized browsing across multiple devices and browsers.
 ### How to Deploy
 
 ```shell
-$ npm run deploy                # or, `npm run deploy -- production`
+$ npm run deploy                # or, `npm run deploy -- --production`
 ```
 
 For more information see `tools/deploy.js`.
@@ -125,6 +125,11 @@ $ npm test
 
 Test any javascript module by creating a `__tests__/` directory where
 the file is. Append `-test.js` to the filename and [Jest](https://facebook.github.io/jest/) will do the rest.
+
+### Our Sponsors
+
+[![Rollbar](https://dl.dropboxusercontent.com/u/16006521/react-starter-kit/rollbar.png)](https://rollbar.com/?utm_source=reactstartkit(github)&utm_medium=link&utm_campaign=reactstartkit(github)) &nbsp;&nbsp;&nbsp;
+[![Makers Academy](https://dl.dropboxusercontent.com/u/16006521/react-starter-kit/makers-academy.png)](http://www.makersacademy.com/?utm_source=ReactStarterKit&utm_medium=link&utm_campaign=ReactStarterKitGithub)
 
 ### Related Projects
 
