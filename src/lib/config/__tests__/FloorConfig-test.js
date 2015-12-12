@@ -9,7 +9,6 @@ describe('FloorConfig', () => {
   });
 
   it('should accepts an entrance argument', () => {
-    console.log(new FloorConfig);
     expect(new FloorConfig({entrance: true}).entrance).toBeTruthy();
   });
 });
