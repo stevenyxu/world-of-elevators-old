@@ -5,11 +5,12 @@ import ReactDOM from 'react-dom';
 import FastClick from 'fastclick';
 import Router from './routes';
 import Location from './core/Location';
-import { addEventListener, removeEventListener } from './utils/DOMUtils';
+import { addEventListener, removeEventListener } from './core/DOMUtils';
 
 let cssContainer = document.getElementById('css');
 const appContainer = document.getElementById('app');
 const context = {
+  insertCss: styles => styles._insertCss(),
   onSetTitle: value => document.title = value,
   onSetMeta: (name, content) => {
     // Remove and create a new <meta /> tag in order to make it work

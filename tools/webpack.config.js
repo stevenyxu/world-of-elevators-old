@@ -10,6 +10,7 @@
 import path from 'path';
 import webpack from 'webpack';
 import merge from 'lodash.merge';
+import AssetsPlugin from 'assets-webpack-plugin';
 
 const DEBUG = !process.argv.includes('--release');
 const VERBOSE = process.argv.includes('--verbose');
@@ -27,14 +28,6 @@ const AUTOPREFIXER_BROWSERS = [
 const GLOBALS = {
   'process.env.NODE_ENV': DEBUG ? '"development"' : '"production"',
   __DEV__: DEBUG,
-};
-const JS_LOADER = {
-  test: /\.jsx?$/,
-  include: [
-    path.resolve(__dirname, '../node_modules/react-routing/src'),
-    path.resolve(__dirname, '../src'),
-  ],
-  loader: 'babel-loader',
 };
 
 //
@@ -68,12 +61,27 @@ const config = {
   ],
 
   resolve: {
-    extensions: ['', '.webpack.js', '.web.js', '.js', '.jsx'],
+    extensions: ['', '.webpack.js', '.web.js', '.js', '.jsx', '.json'],
   },
 
   module: {
     loaders: [
       {
+        test: /\.jsx?$/,
+        include: [
+          path.resolve(__dirname, '../node_modules/react-routing/src'),
+          path.resolve(__dirname, '../src'),
+        ],
+        loader: 'babel-loader',
+      }, {
+        test: /\.scss$/,
+        loaders: [
+          'isomorphic-style-loader',
+          'css-loader?' + (DEBUG ? 'sourceMap&' : 'minimize&') +
+          'modules&localIdentName=[name]_[local]_[hash:base64:3]',
+          'postcss-loader',
+        ],
+      }, {
         test: /\.json$/,
         loader: 'json-loader',
       }, {
@@ -92,8 +100,8 @@ const config = {
   postcss: function plugins(bundler) {
     return [
       require('postcss-import')({ addDependencyTo: bundler }),
-      require('postcss-nested')(),
-      require('postcss-cssnext')({ autoprefixer: AUTOPREFIXER_BROWSERS }),
+      require('precss')(),
+      require('autoprefixer')({ browsers: AUTOPREFIXER_BROWSERS }),
     ];
   },
 };
@@ -103,21 +111,26 @@ const config = {
 // -----------------------------------------------------------------------------
 
 const appConfig = merge({}, config, {
-  entry: [
-    ...(WATCH ? ['webpack-hot-middleware/client'] : []),
-    './src/app.js',
-  ],
+  entry: {
+    app: [
+      ...(WATCH ? ['webpack-hot-middleware/client'] : []),
+      './src/app.js',
+    ],
+  },
   output: {
     path: path.join(__dirname, '../build/public'),
-    filename: 'app.js',
+    filename: DEBUG ? '[name].js?[hash]' : '[name].[hash].js',
   },
 
   // Choose a developer tool to enhance debugging
   // http://webpack.github.io/docs/configuration.html#devtool
   devtool: DEBUG ? 'cheap-module-eval-source-map' : false,
   plugins: [
-    ...config.plugins,
     new webpack.DefinePlugin(GLOBALS),
+    new AssetsPlugin({
+      path: path.join(__dirname, '../build'),
+      filename: 'assets.json',
+    }),
     ...(!DEBUG ? [
       new webpack.optimize.DedupePlugin(),
       new webpack.optimize.UglifyJsPlugin({
@@ -132,38 +145,30 @@ const appConfig = merge({}, config, {
       new webpack.NoErrorsPlugin(),
     ] : []),
   ],
-  module: {
-    loaders: [
-      WATCH ? {
-        ...JS_LOADER,
-        query: {
-          // Wraps all React components into arbitrary transforms
-          // https://github.com/gaearon/babel-plugin-react-transform
-          plugins: ['react-transform'],
-          extra: {
-            'react-transform': {
-              transforms: [
-                {
-                  transform: 'react-transform-hmr',
-                  imports: ['react'],
-                  locals: ['module'],
-                }, {
-                  transform: 'react-transform-catch-errors',
-                  imports: ['react', 'redbox-react'],
-                },
-              ],
-            },
-          },
-        },
-      } : JS_LOADER,
-      ...config.module.loaders,
-      {
-        test: /\.css$/,
-        loader: 'style-loader/useable!css-loader!postcss-loader',
-      },
-    ],
-  },
 });
+
+// Enable React Transform in the "watch" mode
+appConfig.module.loaders
+  .filter(x => WATCH && x.loader === 'babel-loader')
+  .forEach(x => x.query = {
+    // Wraps all React components into arbitrary transforms
+    // https://github.com/gaearon/babel-plugin-react-transform
+    plugins: ['react-transform'],
+    extra: {
+      'react-transform': {
+        transforms: [
+          {
+            transform: 'react-transform-hmr',
+            imports: ['react'],
+            locals: ['module'],
+          }, {
+            transform: 'react-transform-catch-errors',
+            imports: ['react', 'redbox-react'],
+          },
+        ],
+      },
+    },
+  });
 
 //
 // Configuration for the server-side bundle (server.js)
@@ -178,9 +183,10 @@ const serverConfig = merge({}, config, {
   },
   target: 'node',
   externals: [
+    /^\.\/assets\.json$/,
     function filter(context, request, cb) {
       const isExternal =
-        request.match(/^[a-z][a-z\/\.\-0-9]*$/i) &&
+        request.match(/^[@a-z][a-z\/\.\-0-9]*$/i) &&
         !request.match(/^react-routing/) &&
         !context.match(/[\\/]react-routing/);
       cb(null, Boolean(isExternal));
@@ -196,21 +202,10 @@ const serverConfig = merge({}, config, {
   },
   devtool: 'source-map',
   plugins: [
-    ...config.plugins,
     new webpack.DefinePlugin(GLOBALS),
     new webpack.BannerPlugin('require("source-map-support").install();',
       { raw: true, entryOnly: false }),
   ],
-  module: {
-    loaders: [
-      JS_LOADER,
-      ...config.module.loaders,
-      {
-        test: /\.css$/,
-        loader: 'css-loader!postcss-loader',
-      },
-    ],
-  },
 });
 
 export default [appConfig, serverConfig];
