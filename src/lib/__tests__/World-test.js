@@ -1,6 +1,6 @@
-import ElevatorConfig from '../ElevatorConfig';
-import FloorConfig from '../FloorConfig';
-import WorldConfig from '../WorldConfig';
+import ElevatorConfig from '../config/ElevatorConfig';
+import FloorConfig from '../config/FloorConfig';
+import WorldConfig from '../config/WorldConfig';
 
 jest.dontMock('../World');
 jest.dontMock('riot/riot');
