@@ -5,7 +5,7 @@ import WorldConfig from '../config/WorldConfig';
 jest.dontMock('../World');
 jest.dontMock('riot/riot');
 
-let World = require('../World');
+const World = require('../World');
 
 describe('World with basic config', () => {
   let basicWorldConfig;
@@ -26,7 +26,7 @@ describe('World with basic config', () => {
     });
   });
 
-  it ('should have 0 people', () => {
+  it('should have 0 people', () => {
     expect(world.people.length).toBe(0);
   });
 });

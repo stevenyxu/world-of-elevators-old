@@ -1,6 +1,6 @@
 jest.dontMock('../FloorConfig');
 
-let FloorConfig = require('../FloorConfig');
+const FloorConfig = require('../FloorConfig');
 
 describe('FloorConfig', () => {
   it('should instantiate with no arguments', () => {
@@ -9,6 +9,6 @@ describe('FloorConfig', () => {
   });
 
   it('should accepts an entrance argument', () => {
-    expect(new FloorConfig({entrance: true}).entrance).toBeTruthy();
+    expect(new FloorConfig({ entrance: true }).entrance).toBeTruthy();
   });
 });

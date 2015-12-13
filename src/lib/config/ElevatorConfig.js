@@ -1,5 +1,6 @@
 class ElevatorConfig {
-  constructor(params) {
+  constructor(params = {}) {
+    this.size = params.size || 6;
   }
 }
 

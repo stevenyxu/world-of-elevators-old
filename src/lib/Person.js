@@ -1,4 +1,6 @@
 class Person {
-  tick(clock) {
+  tick() {
   }
 }
+
+export default Person;

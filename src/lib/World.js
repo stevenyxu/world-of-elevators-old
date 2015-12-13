@@ -1,4 +1,4 @@
-import {observable} from 'riot/riot';
+import { observable } from 'riot/riot';
 import Elevator from './Elevator';
 import Floor from './Floor';
 

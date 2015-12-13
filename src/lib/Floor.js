@@ -1,8 +1,8 @@
 class Floor {
-  constructor(floorConfig) {
+  constructor() {
   }
 
-  tick(clock) {
+  tick() {
   }
 }
 

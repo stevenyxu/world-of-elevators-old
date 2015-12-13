@@ -3,7 +3,7 @@ import FloorConfig from './FloorConfig';
 
 class WorldConfig {
   constructor(params = {}) {
-    let floorConfigsSet = !!params.floorConfigs;
+    const floorConfigsSet = !!params.floorConfigs;
     if (!floorConfigsSet) {
       params.floorConfigs = new Array(params.numFloors || 2);
     }
@@ -25,7 +25,11 @@ class WorldConfig {
     }
     this.elevatorConfigs = [];
     for (let i = 0; i < params.elevatorConfigs.length; i++) {
-      this.elevatorConfigs[i] = params.elevatorConfigs[i];
+      let elevatorConfig = params.elevatorConfigs[i];
+      if (typeof params.elevatorConfigs[i] === 'undefined') {
+        elevatorConfig = {};
+      }
+      this.elevatorConfigs[i] = new ElevatorConfig(elevatorConfig);
     }
   }
 }

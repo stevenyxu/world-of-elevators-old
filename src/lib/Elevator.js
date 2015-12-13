@@ -1,8 +1,8 @@
 class Elevator {
-  constructor(elevatorConfig) {
+  constructor() {
   }
 
-  tick(clock) {
+  tick() {
   }
 }
 
